@@ -1,7 +1,9 @@
+import './Overview.css';
+
 const Overview = () => {
-  return <div className="overview">
+  return (<div className="overview">
     Overview
-  </div>;
+  </div>);
 };
 
 export default Overview;
