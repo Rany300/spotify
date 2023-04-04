@@ -1,0 +1,36 @@
+.playlist-preview-small {
+
+
+  }
+  
+  .playlist-preview-large {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 281px;
+    width: 231px;
+    background: #1f1f1f;
+    margin: 10px;
+    border-radius: 10px;
+  }
+
+  .playlist-preview-large:hover {
+    cursor: pointer;
+  }
+  
+  .playlist-preview-large-cover {
+    height: 50%;
+    padding: 20px;
+    box-sizing: border-box; 
+  }
+  
+  .playlist-preview-large-info {
+    height: 50%;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  

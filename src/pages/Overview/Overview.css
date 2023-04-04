@@ -1,0 +1,38 @@
+.overview {
+  z-index: -5;
+  overflow: hidden;
+  padding: 1.3em;
+  background: linear-gradient(
+    to bottom,
+    #222222,
+    #1f1f1f,
+    #171717,
+    #161616,
+    #151515,
+    #131313,
+    #121212,
+    #121212,
+    #121212,
+    #121212
+  );
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 38px;
+}
+
+.personal-section {
+  height: 100%;
+}
+
+.top-section {
+  height: 100%;
+}
+
+.top-list {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}

@@ -2,13 +2,24 @@ import type { Title } from "../types/Title";
 import "./Player.css";
 import "../assets/shuffle.svg";
 import { getDurationInMinutes } from "../helpers/helperFunctions";
+import React from "react";
 
 type PlayerProps = {
   title: Title;
   cover: React.ReactNode;
 };
 
-const Player = ({ title, cover }: PlayerProps) => {
+const { forwardRef, useRef, useImperativeHandle } = React;
+
+// const Player = ({ title, cover }: PlayerProps) => {
+
+const Player = forwardRef(({ title, cover }: PlayerProps, ref) => {
+  useImperativeHandle(ref, () => ({
+    getAlert() {
+      alert("getAlert from Child");
+    },
+  }));
+
   return (
     <div className="player">
       <div className="player_left">
@@ -226,6 +237,6 @@ const Player = ({ title, cover }: PlayerProps) => {
       </div>
     </div>
   );
-};
+});
 
 export default Player;

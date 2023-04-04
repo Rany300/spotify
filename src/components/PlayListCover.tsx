@@ -3,6 +3,7 @@ import "./PlayListCover.css";
 type PlayListCoverProps = {
   name?: string;
   gradient: string;
+  rounded?: boolean;
   icon?: React.ReactNode;
 };
 
@@ -16,7 +17,7 @@ const PlayListCover = (props: PlayListCoverProps) => {
   };
 
   return (
-    <div className="playlist_cover" style={{ background: props.gradient }}>
+    <div className="playlist_cover" style={{ background: props.gradient, borderRadius: props.rounded ? "10px" : "0" }}>
       {getContent()}
     </div>
   );
