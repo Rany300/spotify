@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Playlist } from "../../types/Playlist";
 import { Input, Select, Table } from "antd";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import { getDurationInMinutes } from "../../helpers/helperFunctions";
 import PlayListCover from "../../components/PlayListCover";
 import { RootState } from "../../store";
+import { addToFavorites, removeFromFavorites } from "../../Slices/playlistsSlice";
 import { SearchOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { Title } from "../../types/Title";
@@ -20,7 +21,7 @@ const PlaylistPage = () => {
       key: "id",
       render: (text, record, index) => (
         <>
-          {index + 1} <HeartOutlined />
+          {index + 1} {checkFavorite(record) ? <HeartFilled onClick={() => handleRemoveFromFavorite(record)} style={{color: "green"}} /> : <HeartOutlined onClick={() => handleAddToFavorite(record)}/>}
         </>
       ),
     },
@@ -55,19 +56,38 @@ const PlaylistPage = () => {
     },
   ];
 
+
+
   const [order, setOrder] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   const { Search } = Input;
 
+  const dispatch = useDispatch();
   const id = useParams().id;
   const playlists = useSelector((state: RootState) => state.playlists);
+
+  const handleAddToFavorite = (title: Title) => {
+    dispatch(addToFavorites(title));
+  };
+
+
+  const handleRemoveFromFavorite = (title: Title) => {
+    dispatch(removeFromFavorites(title));
+  };
+    
+        
+
+  const checkFavorite = (title: Title) => {
+    const isFavorite = playlists[0].titles.find(
+      (favoriteTitle: Title) => favoriteTitle.id === title.id
+    );
+    return isFavorite ? true : false;
+  };
 
   console.log(playlists[0].id);
 
   const playlist = playlists.find((playlist: Playlist) => playlist.id === id);
-
-  
 
   if (!playlist) return <div className="playlist-page">Playlist not found</div>;
 
@@ -83,7 +103,15 @@ const PlaylistPage = () => {
         className="playlist-page-header"
         style={{ background: playlist.gradient }}>
         <div className="playlist-page-header-cover">
-          <PlayListCover gradient={playlist.gradient} rounded={true} />
+          {playlist.isFavorites ? (
+            <PlayListCover
+              gradient={playlist.gradient}
+              rounded={true}
+              icon={<HeartFilled style={{ fontSize: "5em" }} />}
+            />
+          ) : (
+            <PlayListCover gradient={playlist.gradient} rounded={true} />
+          )}
         </div>
         <div className="playlist-page-header-title">{playlist.name}</div>
       </div>
@@ -136,7 +164,6 @@ const PlaylistPage = () => {
                   }
                 })
           }
-          
           pagination={false}
           rowKey="id"
         />

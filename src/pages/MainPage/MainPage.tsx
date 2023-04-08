@@ -6,24 +6,80 @@ import Overview from "../Overview/Overview";
 import PlaylistPage from "../Playlist/PlaylistPage";
 import PlayListCover from "../../components/PlayListCover";
 import { generateGradient } from "../../helpers/helperFunctions";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Routes,
-  useRoutes,
-} from "react-router-dom";
-import { ItemType } from "rc-menu/lib/interface";
+import { v4 } from "uuid";
+import { addPlaylist } from "../../Slices/playlistsSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { Playlist } from "../../types/Playlist";
+import { RootState } from "../../store";
+import { HeartFilled } from "@ant-design/icons";
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import Player from "../../components/Player";
-import { useState } from "react";
+import { useRef, useState } from "react";
 const MainPage = () => {
+  const dispatch = useDispatch();
+  const playlists = useSelector((state: RootState) => state.playlists);
+
+  const getFeaturedPlaylists: Playlist[] = playlists.filter(
+    (playlist: Playlist) => playlist.featured
+  );
+
+  const featuredMenuItems: MenuProps["items"] = getFeaturedPlaylists.map(
+    (playlist: Playlist) => {
+      return {
+        key: playlist.id,
+        title: playlist.name,
+        icon: (
+          <Link to={`/playlist/${playlist.id}`}>
+            {playlist.isFavorites ? (
+              <PlayListCover
+                icon={
+                  <PlayListCover
+                    icon={
+                      <HeartFilled
+                        style={{
+                          fontSize: "24px",
+                        }}
+                      />
+                    }
+                    gradient={playlist.gradient}
+                  />
+                }
+                gradient={playlist.gradient}
+              />
+            ) : null}
+            {playlist.name}
+          </Link>
+        ),
+      };
+    }
+  );
+
+  const newPlaylistName = useRef<string>("");
+
   const [modalVisible, setModalVisible] = useState(false);
+
+  const handleAddPlaylist = (title: string) => {
+    const newPlaylist: Playlist = {
+      id: v4(),
+      gradient: generateGradient(),
+      name: title,
+      titles: [],
+      type: "personal",
+    };
+
+    dispatch(addPlaylist(newPlaylist));
+  };
 
   const [player, setPlayer] = useState(
     <Player
       title={rawTitles[0]}
-      cover={<PlayListCover  name={rawTitles[0].title} gradient={generateGradient()} />}
-      />
+      cover={
+        <PlayListCover
+          name={rawTitles[0].title}
+          gradient={generateGradient()}
+        />
+      }
+    />
   );
 
   const items: MenuProps["items"] = [
@@ -55,6 +111,7 @@ const MainPage = () => {
         </div>
       ),
     },
+    ...featuredMenuItems,
   ];
 
   return (
@@ -82,9 +139,19 @@ const MainPage = () => {
         <Modal
           title="Create Playlist"
           open={modalVisible}
-          onOk={() => setModalVisible(false)}
+          onOk={() => {
+            const title = newPlaylistName.current;
+            if (title.trim().length > 0) {
+              handleAddPlaylist(title);
+              setModalVisible(false);
+              newPlaylistName.current = "";
+            }
+          }}
           onCancel={() => setModalVisible(false)}>
-          <Input placeholder="Playlist Name" />
+          <Input
+            placeholder="Playlist Name"
+            onChange={(e) => (newPlaylistName.current = e.target.value)}
+          />
         </Modal>
         <main className="App-main">
           <Routes>
@@ -94,9 +161,7 @@ const MainPage = () => {
         </main>
       </div>
 
-      <div className="App-bottom">
-        {player}
-      </div>
+      <div className="App-bottom">{player}</div>
     </div>
   );
 };

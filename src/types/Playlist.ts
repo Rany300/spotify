@@ -7,4 +7,8 @@ export type Playlist = {
     gradient: string;
     name: string;
     titles: Title[];
+    isFavorites?: boolean;
+    featured?: boolean;
+    cover?: React.ReactNode;
+    type: "personal" | "top";
 }
