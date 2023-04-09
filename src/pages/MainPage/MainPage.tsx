@@ -32,16 +32,18 @@ const MainPage = () => {
           <Link to={`/playlist/${playlist.id}`}>
             {playlist.isFavorites ? (
               <PlayListCover
+              style={{height: "20px", width: "20px", marginRight: "10px"}}
                 icon={
                   <PlayListCover
                     icon={
                       <HeartFilled
                         style={{
-                          fontSize: "24px",
+                          fontSize: "15px",
                         }}
                       />
                     }
                     gradient={playlist.gradient}
+                    
                   />
                 }
                 gradient={playlist.gradient}
@@ -91,8 +93,8 @@ const MainPage = () => {
           <img
             src="/svg/house.svg"
             alt="home"
-            style={{ height: "20px", width: "20px" }}
-          />{" "}
+            style={{ height: "20px", width: "20px", marginRight: "10px" }}
+          />
           Home
         </Link>
       ),
@@ -101,15 +103,16 @@ const MainPage = () => {
       key: "2",
       title: "Create Playlist",
       icon: (
-        <div onClick={() => setModalVisible(true)}>
+        <div>
           <img
             src="/svg/plus.svg"
             alt="create"
-            style={{ height: "20px", width: "20px" }}
+            style={{ height: "20px", width: "20px", marginRight: "10px" }}
           />
           Create Playlist
         </div>
       ),
+      onClick: () => setModalVisible(true),
     },
     ...featuredMenuItems,
   ];
@@ -131,7 +134,7 @@ const MainPage = () => {
           <Menu
             mode="vertical"
             theme="dark"
-            style={{ backgroundColor: "black" }}
+            style={{ backgroundColor: "black" , marginTop: "20px"}}
             items={items}
             defaultSelectedKeys={["1"]}
           />

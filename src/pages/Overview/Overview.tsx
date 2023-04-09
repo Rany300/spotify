@@ -44,6 +44,7 @@ const Overview = () => {
                 playlist={playlist}
                 size="l"
                 gradient={playlist.gradient}
+                subtitle={playlist.titles[0].year.toString()}
                 clickAction={() => navigate(`/playlist/${playlist.id}`)}
               />
             );

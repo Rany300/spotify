@@ -106,11 +106,11 @@ const PlaylistPage = () => {
           {playlist.isFavorites ? (
             <PlayListCover
               gradient={playlist.gradient}
-              rounded={true}
+              style={{ borderRadius: "10px" }}
               icon={<HeartFilled style={{ fontSize: "5em" }} />}
             />
           ) : (
-            <PlayListCover gradient={playlist.gradient} rounded={true} />
+            <PlayListCover gradient={playlist.gradient} style={{ borderRadius: "10px" }} />
           )}
         </div>
         <div className="playlist-page-header-title">{playlist.name}</div>

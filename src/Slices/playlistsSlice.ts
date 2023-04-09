@@ -19,7 +19,7 @@ const generatePersonalPlaylists = (): Playlist[] => {
   const names: string[] = [
     "Liked Songs",
     "FAV",
-    "Dayli Mix 1",
+    "Daily Mix 1",
     "Discover Weekly",
     "Malayalam",
     "Dance/Electro Mix",
