@@ -74,13 +74,13 @@ const PlaylistPage = ({ onSongClick }: PlaylistPageProps) => {
   const [order, setOrder] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-
   const dispatch = useDispatch();
   const id = useParams().id;
   const playlists = useSelector((state: RootState) => state.playlists);
 
   const personalPlaylists = playlists.filter(
-    (playlist: Playlist) => playlist.type === "personal" && !playlist.isFavorites
+    (playlist: Playlist) =>
+      playlist.type === "personal" && !playlist.isFavorites
   );
 
   const handleAddToFavorite = (title: Title) => {
