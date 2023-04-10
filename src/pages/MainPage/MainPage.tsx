@@ -12,9 +12,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { Playlist } from "../../types/Playlist";
 import { RootState } from "../../store";
 import { HeartFilled } from "@ant-design/icons";
+import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import Player from "../../components/Player";
 import { useRef, useState } from "react";
+import { Title } from "../../types/Title";
 const MainPage = () => {
   const dispatch = useDispatch();
   const playlists = useSelector((state: RootState) => state.playlists);
@@ -23,38 +25,35 @@ const MainPage = () => {
     (playlist: Playlist) => playlist.featured
   );
 
-  const featuredMenuItems: MenuProps["items"] = getFeaturedPlaylists.map(
-    (playlist: Playlist) => {
-      return {
-        key: playlist.id,
-        title: playlist.name,
-        icon: (
-          <Link to={`/playlist/${playlist.id}`}>
-            {playlist.isFavorites ? (
-              <PlayListCover
-              style={{height: "20px", width: "20px", marginRight: "10px"}}
-                icon={
-                  <PlayListCover
-                    icon={
-                      <HeartFilled
-                        style={{
-                          fontSize: "15px",
-                        }}
-                      />
-                    }
-                    gradient={playlist.gradient}
-                    
-                  />
-                }
-                gradient={playlist.gradient}
-              />
-            ) : null}
-            {playlist.name}
-          </Link>
-        ),
-      };
-    }
-  );
+  const featuredMenuItems = getFeaturedPlaylists.map((playlist: Playlist) => {
+    return {
+      key: playlist.id,
+      title: playlist.name,
+      icon: (
+        <Link to={`/playlist/${playlist.id}`}>
+          {playlist.isFavorites ? (
+            <PlayListCover
+              style={{ height: "20px", width: "20px", marginRight: "10px" }}
+              icon={
+                <PlayListCover
+                  icon={
+                    <HeartFilled
+                      style={{
+                        fontSize: "15px",
+                      }}
+                    />
+                  }
+                  gradient={playlist.gradient}
+                />
+              }
+              gradient={playlist.gradient}
+            />
+          ) : null}
+          {playlist.name}
+        </Link>
+      ),
+    };
+  });
 
   const newPlaylistName = useRef<string>("");
 
@@ -72,17 +71,15 @@ const MainPage = () => {
     dispatch(addPlaylist(newPlaylist));
   };
 
-  const [player, setPlayer] = useState(
-    <Player
-      title={rawTitles[0]}
-      cover={
-        <PlayListCover
-          name={rawTitles[0].title}
-          gradient={generateGradient()}
-        />
-      }
-    />
-  );
+  const playerRef = useRef(null);
+
+  const selectTitle = (title: Title, gradient: string) => {
+    const player: any = playerRef.current;
+    if (player) {
+      player.setSong(title);
+      player.setCover(<PlayListCover gradient={gradient} name={title.title} />);
+    }
+  };
 
   const items: MenuProps["items"] = [
     {
@@ -134,7 +131,7 @@ const MainPage = () => {
           <Menu
             mode="vertical"
             theme="dark"
-            style={{ backgroundColor: "black" , marginTop: "20px"}}
+            style={{ backgroundColor: "black", marginTop: "20px" }}
             items={items}
             defaultSelectedKeys={["1"]}
           />
@@ -159,12 +156,14 @@ const MainPage = () => {
         <main className="App-main">
           <Routes>
             <Route path="/" element={<Overview />} />
-            <Route path="/playlist/:id" element={<PlaylistPage />} />
+            <Route path="/playlist/:id" element={<PlaylistPage onSongClick={selectTitle} />} />
           </Routes>
         </main>
       </div>
 
-      <div className="App-bottom">{player}</div>
+      <div className="App-bottom">
+        <Player ref={playerRef} />
+      </div>
     </div>
   );
 };

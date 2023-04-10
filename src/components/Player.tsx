@@ -4,19 +4,18 @@ import "../assets/shuffle.svg";
 import { getDurationInMinutes } from "../helpers/helperFunctions";
 import React from "react";
 
-type PlayerProps = {
-  title: Title;
-  cover: React.ReactNode;
-};
-
 const { forwardRef, useRef, useImperativeHandle } = React;
 
-// const Player = ({ title, cover }: PlayerProps) => {
+const Player = forwardRef((props, ref) => {
+  const [currentSong, setCurrentSong] = React.useState<Title | null>(null);
+  const [currentCover, setCurrentCover] = React.useState<React.ReactNode | null>(null);
 
-const Player = forwardRef(({ title, cover }: PlayerProps, ref) => {
   useImperativeHandle(ref, () => ({
-    getAlert() {
-      alert("getAlert from Child");
+    setSong(song: Title) {
+      setCurrentSong(song);
+    },
+    setCover(cover: React.ReactNode) {
+      setCurrentCover(cover);
     },
   }));
 
@@ -27,7 +26,7 @@ const Player = forwardRef(({ title, cover }: PlayerProps, ref) => {
           <div
             className="player_cover"
             style={{ width: "70px", height: "70px" }}>
-            {cover}
+            {currentCover || null}
           </div>
           <div
             className="player_title"
@@ -40,12 +39,12 @@ const Player = forwardRef(({ title, cover }: PlayerProps, ref) => {
             <div
               className="player_title_name"
               style={{ fontSize: "18px", color: "white" }}>
-              {title.title}
+              {currentSong?.title || "No title"}
             </div>
             <div
               className="player_title_artist"
               style={{ fontSize: "15px", color: "#B3B3B3" }}>
-              {title.artist}
+              {currentSong?.artist || "No artist"}
             </div>
           </div>
           <svg
@@ -127,7 +126,9 @@ const Player = forwardRef(({ title, cover }: PlayerProps, ref) => {
         <div className="player_center_bottom">
           <span>0:00</span>
           <span className="player_bar" />
-          <span>{getDurationInMinutes(title.duration)}</span>
+          <span>
+            {getDurationInMinutes(currentSong?.duration ?? 0)}
+          </span>
         </div>
       </div>
       <div className="player_right">

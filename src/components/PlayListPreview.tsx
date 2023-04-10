@@ -21,7 +21,7 @@ const PlayListPreview = ({
   clickAction,
 }: PlayListPreviewProps) => {
   const getSmallPreview = (
-    <div className="playlist-preview-small" style={style}>
+    <div className="playlist-preview-small" style={style} onClick={() => clickAction?.()}>
       <div className="playlist-preview-small-cover">
         <PlayListCover
           gradient={gradient}

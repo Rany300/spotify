@@ -9,6 +9,10 @@
   margin: 20px;
 }
 
+.playlist-preview-small:hover {
+  cursor: pointer;
+}
+
 .playlist-preview-small-info {
   align-self: center;
   font-size:  large;
