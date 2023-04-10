@@ -1,19 +1,16 @@
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Playlist } from "../../types/Playlist";
-import { Input, Select, Table } from "antd";
+import { Input, Select, Table, Modal, MenuProps, List } from "antd";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import { getDurationInMinutes } from "../../helpers/helperFunctions";
 import PlayListCover from "../../components/PlayListCover";
 import { RootState } from "../../store";
-import {
-  addToFavorites,
-  removeFromFavorites,
-} from "../../Slices/playlistsSlice";
+import { toggleToPlaylist } from "../../Slices/playlistsSlice";
 import { SearchOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { Title } from "../../types/Title";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./PlaylistPage.css";
 
 type PlaylistPageProps = {
@@ -21,6 +18,9 @@ type PlaylistPageProps = {
 };
 
 const PlaylistPage = ({ onSongClick }: PlaylistPageProps) => {
+  const [menuVisible, setMenuVisible] = useState(false);
+  const selectedSong = useRef<Title | null>(null);
+
   const columns: ColumnsType<Title> = [
     {
       title: "#",
@@ -31,7 +31,7 @@ const PlaylistPage = ({ onSongClick }: PlaylistPageProps) => {
           {index + 1}{" "}
           {checkFavorite(record) ? (
             <HeartFilled
-              onClick={() => handleRemoveFromFavorite(record)}
+              onClick={() => handleAddToFavorite(record)}
               style={{ color: "green" }}
             />
           ) : (
@@ -45,16 +45,6 @@ const PlaylistPage = ({ onSongClick }: PlaylistPageProps) => {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      render: (text, record, index) => (
-        <div
-          onClick={() =>
-            onSongClick && onSongClick(record, playlist?.gradient || "")
-          }
-          style={{ cursor: "pointer" }}
-        >
-          {record.title}
-        </div>
-      ),
     },
     {
       title: "Year",
@@ -84,18 +74,21 @@ const PlaylistPage = ({ onSongClick }: PlaylistPageProps) => {
   const [order, setOrder] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { Search } = Input;
 
   const dispatch = useDispatch();
   const id = useParams().id;
   const playlists = useSelector((state: RootState) => state.playlists);
 
-  const handleAddToFavorite = (title: Title) => {
-    dispatch(addToFavorites(title));
-  };
+  const personalPlaylists = playlists.filter(
+    (playlist: Playlist) => playlist.type === "personal" && !playlist.isFavorites
+  );
 
-  const handleRemoveFromFavorite = (title: Title) => {
-    dispatch(removeFromFavorites(title));
+  const handleAddToFavorite = (title: Title) => {
+    let favoritePlaylist = playlists[0];
+    console.log(favoritePlaylist);
+    if (favoritePlaylist) {
+      dispatch(toggleToPlaylist({ title: title, playlist: favoritePlaylist }));
+    }
   };
 
   const checkFavorite = (title: Title) => {
@@ -162,10 +155,55 @@ const PlaylistPage = ({ onSongClick }: PlaylistPageProps) => {
             ]}
           />
         </div>
-
+        <Modal
+          open={menuVisible}
+          footer={null}
+          closable={false}
+          className="playlist-page-modal"
+          title="Add to playlist"
+          onCancel={() => setMenuVisible(false)}>
+          <List
+            dataSource={personalPlaylists}
+            renderItem={(playlist: Playlist) => (
+              <List.Item>
+                <div
+                  onClick={() => {
+                    if (selectedSong.current) {
+                      dispatch(
+                        toggleToPlaylist({
+                          title: selectedSong.current,
+                          playlist,
+                        })
+                      );
+                      setMenuVisible(false);
+                      selectedSong.current = null;
+                    }
+                  }}
+                  style={{ cursor: "pointer", width: "100%" }}>
+                  {playlist.name}
+                </div>
+              </List.Item>
+            )}
+          />
+        </Modal>
         <Table
           className="playlist-page-table"
           columns={columns}
+          style={{ cursor: "pointer" }}
+          onRow={(record, rowIndex) => {
+            return {
+              onContextMenu: (event) => {
+                event.preventDefault();
+                selectedSong.current = record;
+                setMenuVisible(true);
+              },
+              onClick: (event) => {
+                if (onSongClick) {
+                  onSongClick(record, playlist.gradient);
+                }
+              },
+            };
+          }}
           dataSource={
             order === "Custom Order"
               ? filteredTitles

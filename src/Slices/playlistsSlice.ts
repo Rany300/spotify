@@ -78,17 +78,17 @@ export const playlistsSlice = createSlice({
     addPlaylist: (state, action: PayloadAction<Playlist>) => {
       state.push(action.payload);
     },
-    addToFavorites: (state, action: PayloadAction<Title>) => {
-      state[0].titles.push(action.payload);
-    },
-    removeFromFavorites: (state, action: PayloadAction<Title>) => {
-      const title = action.payload;
-      const favorites = state[0].titles;
-      const index = favorites.findIndex((fav) => fav.id === title.id);
-      favorites.splice(index, 1);
-    }
+    toggleToPlaylist: (state, action: PayloadAction<{ title: Title; playlist: Playlist }>) => {
+      const { title, playlist } = action.payload;
+      const index = playlist.titles.findIndex((t) => t.id === title.id);
+      const newTitles = index === -1 
+        ? [...playlist.titles, title]
+        : playlist.titles.filter((t) => t.id !== title.id);
+      const updatedPlaylist = { ...playlist, titles: newTitles };
+      return state.map((p) => (p.id === updatedPlaylist.id ? updatedPlaylist : p));
+    }    
   },
 });
 
-export const { addPlaylist, addToFavorites, removeFromFavorites } = playlistsSlice.actions;
+export const { addPlaylist, toggleToPlaylist } = playlistsSlice.actions;
 export default playlistsSlice.reducer;
