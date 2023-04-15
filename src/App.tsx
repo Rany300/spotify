@@ -20,13 +20,39 @@ import "./App.css";
 
 const App = () => {
   const dispatch = useDispatch();
-  const playlists = useSelector((state: RootState) => state.playlists);
 
-  const getFeaturedPlaylists: Playlist[] = playlists.filter(
-    (playlist: Playlist) => playlist.featured
+  const featuredPlaylists = useSelector((state: RootState) =>
+    state.playlists.filter((playlist: Playlist) => playlist.featured)
   );
 
-  const featuredMenuItems = getFeaturedPlaylists.map((playlist: Playlist) => {
+  const newPlaylistName = useRef<string>("");
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleAddPlaylist = (title: string) => {
+    const newPlaylist: Playlist = {
+      id: v4(),
+      gradient: generateGradient(),
+      name: title,
+      titles: [],
+      type: "personal",
+      featured: true,
+    };
+
+    dispatch(addPlaylist(newPlaylist));
+  };
+
+  const playerRef = useRef(null);
+
+  const selectTitle = (title: Title, gradient: string) => {
+    const player: any = playerRef.current;
+    if (player) {
+      player.setSong(title);
+      player.setCover(<PlayListCover gradient={gradient} name={title.title} />);
+    }
+  };
+
+  const featuredMenuItems = featuredPlaylists.map((playlist: Playlist) => {
     return {
       key: playlist.id,
       title: playlist.name,
@@ -55,32 +81,6 @@ const App = () => {
       ),
     };
   });
-
-  const newPlaylistName = useRef<string>("");
-
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const handleAddPlaylist = (title: string) => {
-    const newPlaylist: Playlist = {
-      id: v4(),
-      gradient: generateGradient(),
-      name: title,
-      titles: [],
-      type: "personal",
-    };
-
-    dispatch(addPlaylist(newPlaylist));
-  };
-
-  const playerRef = useRef(null);
-
-  const selectTitle = (title: Title, gradient: string) => {
-    const player: any = playerRef.current;
-    if (player) {
-      player.setSong(title);
-      player.setCover(<PlayListCover gradient={gradient} name={title.title} />);
-    }
-  };
 
   const items: MenuProps["items"] = [
     {
@@ -146,7 +146,6 @@ const App = () => {
               theme="dark"
               style={{ backgroundColor: "black", marginTop: "20px" }}
               items={items}
-              defaultSelectedKeys={["1"]}
             />
           </div>
           <Modal
