@@ -144,7 +144,7 @@ const App = () => {
             <Menu
               mode="vertical"
               theme="dark"
-              style={{ backgroundColor: "black", marginTop: "20px" }}
+              style={{ backgroundColor: "black", height: "85%" , marginTop: "20px", overflowY: "scroll" }}
               items={items}
             />
           </div>

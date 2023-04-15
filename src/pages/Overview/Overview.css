@@ -1,6 +1,6 @@
 .overview {
   z-index: -5;
-  overflow: hidden;
+  overflow: scroll;
   padding: 1.3em;
   background: linear-gradient(
     to bottom,
@@ -35,5 +35,5 @@
   height: 100%;
   display: grid;
 
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 }
