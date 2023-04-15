@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Playlist } from "../../types/Playlist";
-import { Input, Select, Table, Modal, MenuProps, List } from "antd";
+import { Input, Select, Table, Modal, List } from "antd";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import { getDurationInMinutes } from "../../helpers/helperFunctions";
 import PlayListCover from "../../components/PlayListCover";

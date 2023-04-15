@@ -1,6 +1,4 @@
-import "./index.css";
 import { ConfigProvider } from "antd";
-import "./App.css";
 import type { MenuProps } from "antd";
 import { Menu, Modal, Input } from "antd";
 import Overview from "./pages/Overview/Overview";
@@ -13,11 +11,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { Playlist } from "./types/Playlist";
 import { RootState } from "./store";
 import { HeartFilled } from "@ant-design/icons";
-import { useEffect } from "react";
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+import { Route, Link, Routes } from "react-router-dom";
 import Player from "./components/Player";
 import { useRef, useState } from "react";
 import { Title } from "./types/Title";
+import "./index.css";
+import "./App.css";
 
 const App = () => {
   const dispatch = useDispatch();

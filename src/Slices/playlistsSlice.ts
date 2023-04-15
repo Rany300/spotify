@@ -1,11 +1,9 @@
 import { Playlist } from "../types/Playlist";
-import { Title, TitleWithoutId } from "../types/Title";
+import { Title } from "../types/Title";
 import { generateGradient } from "../helpers/helperFunctions";
 import data from "../static/data.json";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 } from "uuid";
-import PlayListCover from "../components/PlayListCover";
-import { HeartFilled } from "@ant-design/icons";
 
 export const rawTitles = data.map((title: any) => {
   return {
@@ -52,7 +50,6 @@ const generatePersonalPlaylists = (): Playlist[] => {
   return playlists;
 };
 
-
 const generateTopPlaylists = (): Playlist[] => {
   const playlists: Playlist[] = [];
   const years = Array.from(new Set(rawTitles.map((title) => title.year)));
@@ -78,15 +75,21 @@ export const playlistsSlice = createSlice({
     addPlaylist: (state, action: PayloadAction<Playlist>) => {
       state.push(action.payload);
     },
-    toggleToPlaylist: (state, action: PayloadAction<{ title: Title; playlist: Playlist }>) => {
+    toggleToPlaylist: (
+      state,
+      action: PayloadAction<{ title: Title; playlist: Playlist }>
+    ) => {
       const { title, playlist } = action.payload;
       const index = playlist.titles.findIndex((t) => t.id === title.id);
-      const newTitles = index === -1 
-        ? [...playlist.titles, title]
-        : playlist.titles.filter((t) => t.id !== title.id);
+      const newTitles =
+        index === -1
+          ? [...playlist.titles, title]
+          : playlist.titles.filter((t) => t.id !== title.id);
       const updatedPlaylist = { ...playlist, titles: newTitles };
-      return state.map((p) => (p.id === updatedPlaylist.id ? updatedPlaylist : p));
-    }    
+      return state.map((p) =>
+        p.id === updatedPlaylist.id ? updatedPlaylist : p
+      );
+    },
   },
 });
 
